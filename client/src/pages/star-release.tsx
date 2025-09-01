@@ -66,14 +66,10 @@ export default function StarRelease() {
       {/* Header */}
       <header className="p-6 flex justify-between items-center relative z-20">
         <motion.div
-          className="flex items-center space-x-3"
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <div className="w-8 h-8 bg-gradient-to-br from-primary to-accent rounded-full flex items-center justify-center">
-            <span className="text-accent-foreground text-lg font-semibold">★</span>
-          </div>
           <h1 className="text-xl font-semibold text-foreground">Asteria</h1>
         </motion.div>
         
