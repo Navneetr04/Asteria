@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import backgroundMusicUrl from '@assets/galactic-serenity-suite-stocktune_1756756440455.mp3';
 
 export function useAudio() {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -6,15 +7,33 @@ export function useAudio() {
   const audioContextRef = useRef<AudioContext | null>(null);
   const gainNodeRef = useRef<GainNode | null>(null);
   const oscillatorsRef = useRef<OscillatorNode[]>([]);
+  const backgroundAudioRef = useRef<HTMLAudioElement | null>(null);
+  const backgroundGainNodeRef = useRef<GainNode | null>(null);
+  const backgroundSourceRef = useRef<MediaElementAudioSourceNode | null>(null);
 
   useEffect(() => {
-    // Initialize Web Audio API for ambient sounds
+    // Initialize Web Audio API for ambient sounds and background music
     const initAudio = async () => {
       try {
         audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
         gainNodeRef.current = audioContextRef.current.createGain();
         gainNodeRef.current.connect(audioContextRef.current.destination);
         gainNodeRef.current.gain.value = isMuted ? 0 : 0.2;
+
+        // Initialize background music
+        backgroundAudioRef.current = new Audio(backgroundMusicUrl);
+        backgroundAudioRef.current.loop = true;
+        backgroundAudioRef.current.volume = 0; // Start muted, will be controlled by gain node
+        
+        // Create gain node for background music
+        backgroundGainNodeRef.current = audioContextRef.current.createGain();
+        backgroundGainNodeRef.current.gain.value = isMuted ? 0 : 0.15; // Low volume
+        backgroundGainNodeRef.current.connect(audioContextRef.current.destination);
+        
+        // Connect background audio to Web Audio API
+        backgroundSourceRef.current = audioContextRef.current.createMediaElementSource(backgroundAudioRef.current);
+        backgroundSourceRef.current.connect(backgroundGainNodeRef.current);
+        
       } catch (error) {
         console.warn("Web Audio API not supported:", error);
       }
@@ -30,6 +49,10 @@ export function useAudio() {
           // Oscillator may already be stopped
         }
       });
+      if (backgroundAudioRef.current) {
+        backgroundAudioRef.current.pause();
+        backgroundAudioRef.current.src = '';
+      }
       if (audioContextRef.current) {
         audioContextRef.current.close();
       }
@@ -54,6 +77,12 @@ export function useAudio() {
         }
       });
       oscillatorsRef.current = [];
+      
+      // Stop background music
+      if (backgroundAudioRef.current) {
+        backgroundAudioRef.current.pause();
+      }
+      
       setIsPlaying(false);
     } else {
       // Start immersive calming sky soundscape
@@ -130,6 +159,15 @@ export function useAudio() {
         newOscillators.push(lfo);
 
         oscillatorsRef.current = newOscillators;
+        
+        // Start background music
+        if (backgroundAudioRef.current) {
+          backgroundAudioRef.current.currentTime = 0;
+          backgroundAudioRef.current.play().catch(e => {
+            console.warn("Could not play background music:", e);
+          });
+        }
+        
         setIsPlaying(true);
       } catch (error) {
         console.warn("Error starting audio:", error);
@@ -138,9 +176,10 @@ export function useAudio() {
   };
 
   const toggleMute = () => {
-    if (gainNodeRef.current) {
+    if (gainNodeRef.current && backgroundGainNodeRef.current) {
       const newMutedState = !isMuted;
       gainNodeRef.current.gain.value = newMutedState ? 0 : 0.2;
+      backgroundGainNodeRef.current.gain.value = newMutedState ? 0 : 0.15; // Low volume for background music
       setIsMuted(newMutedState);
     }
   };
