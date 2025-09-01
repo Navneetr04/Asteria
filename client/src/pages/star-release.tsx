@@ -96,10 +96,10 @@ export default function StarRelease() {
               transition={{ duration: 0.8, delay: 0.3 }}
             >
               <h2 className="text-4xl md:text-5xl font-light text-glow mb-6">
-                This is your space to let go
+                Sometimes, you need to let it out
               </h2>
-              <p className="text-xl text-muted-foreground max-w-lg mx-auto leading-relaxed">
-                Release what's on your heart. Transform your thoughts into stars and watch them rise into the endless sky.
+              <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+                Write what's on your heart, and release it. Watch it transform into a star and float into the sky. No accounts. No judgment. Just you and your release.
               </p>
             </motion.div>
 
@@ -120,10 +120,13 @@ export default function StarRelease() {
           >
             <div className="space-y-4">
               <h2 className="text-4xl md:text-5xl font-light text-glow mb-6">
-                Your thoughts have joined the cosmos
+                You've let it go
               </h2>
-              <p className="text-xl text-muted-foreground max-w-lg mx-auto leading-relaxed">
-                Look up at your stars. Each one carries the weight you've released into the infinite sky.
+              <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+                Your star is now shining in the sky. Breathe. You are lighter now.
+              </p>
+              <p className="text-lg text-muted-foreground max-w-xl mx-auto leading-relaxed mt-4">
+                Each day, a new sky awaits. Your stars are part of a collective release.
               </p>
             </div>
 
@@ -137,7 +140,7 @@ export default function StarRelease() {
                 className="release-button px-8 py-3 rounded-full text-lg font-medium text-primary-foreground"
                 data-testid="write-another-button"
               >
-                ✨ Write Another Thought
+Let it Go
               </button>
             </motion.div>
           </motion.div>

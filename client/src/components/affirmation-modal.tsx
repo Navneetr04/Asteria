@@ -81,7 +81,7 @@ export function AffirmationModal({ isOpen, onClose }: AffirmationModalProps) {
                 transition={{ delay: 0.4 }}
                 data-testid="affirmation-message"
               >
-                Your star is now in the sky, carrying your thoughts to the cosmos.
+                You are not alone — even if no one sees your words, they are transformed into light.
               </motion.p>
               
               <motion.p

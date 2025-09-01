@@ -76,7 +76,7 @@ export function WritingArea({ onRelease, disabled }: WritingAreaProps) {
           value={text}
           onChange={(e) => setText(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="Write your thoughts, feelings, or worries here..."
+          placeholder="Type what's on your mind… anything at all."
           className="w-full h-40 bg-transparent border-none outline-none resize-none text-lg placeholder-muted-foreground focus-visible:ring-0"
           disabled={isReleasing || disabled}
           data-testid="thoughts-input"
@@ -97,14 +97,14 @@ export function WritingArea({ onRelease, disabled }: WritingAreaProps) {
                 ✨ Releasing...
               </motion.span>
             ) : (
-              "✨ Release Into The Sky"
+              "Let it Go"
             )}
           </Button>
         </div>
       </div>
 
       <p className="text-sm text-muted-foreground text-center mt-4">
-        Your thoughts are anonymous and private. Each day brings a fresh sky.
+        This is your space. Nothing is stored. Nothing is tracked. Just a moment for you to let go.
       </p>
     </div>
   );
