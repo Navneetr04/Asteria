@@ -17,12 +17,12 @@ export function WritingArea({ onRelease, disabled }: WritingAreaProps) {
 
     setIsReleasing(true);
     
-    // Trigger release animation
+    // Trigger release animation - show star rising for longer
     setTimeout(() => {
       onRelease(text);
       setText("");
       setIsReleasing(false);
-    }, 1500);
+    }, 3000); // Extended time to show full star animation
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -42,14 +42,31 @@ export function WritingArea({ onRelease, disabled }: WritingAreaProps) {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.5 }}
           >
+            {/* Text dissolving animation */}
             <motion.div
               initial={{ scale: 1, opacity: 1 }}
-              animate={{ scale: 0.3, opacity: 0, y: -200 }}
-              transition={{ duration: 1.5, ease: "easeOut" }}
-              className="text-center max-w-md"
+              animate={{ scale: 0.3, opacity: 0 }}
+              transition={{ duration: 1, ease: "easeOut" }}
+              className="text-center max-w-md absolute"
             >
               {text.slice(0, 100)}...
             </motion.div>
+            
+            {/* Star rising animation */}
+            <motion.div
+              className="star absolute"
+              initial={{ scale: 0, opacity: 0, y: 0 }}
+              animate={{ 
+                scale: [0, 1.5, 1], 
+                opacity: [0, 1, 1], 
+                y: [0, 0, -600] 
+              }}
+              transition={{ 
+                scale: { duration: 0.5, delay: 0.8 },
+                opacity: { duration: 0.3, delay: 0.8 },
+                y: { duration: 2, delay: 1.2, ease: "easeOut" }
+              }}
+            />
           </motion.div>
         )}
       </AnimatePresence>
