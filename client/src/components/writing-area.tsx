@@ -82,7 +82,7 @@ export function WritingArea({ onRelease, disabled }: WritingAreaProps) {
           onChange={(e) => setText(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="Type what's on your mind… anything at all."
-          className="w-full h-40 bg-transparent border-none outline-none resize-none text-lg placeholder-muted-foreground focus-visible:ring-0"
+          className="w-full h-40 bg-transparent border-none outline-none resize-none text-lg placeholder-muted-foreground focus-visible:ring-0 focus:border-none focus:outline-none"
           disabled={isReleasing || disabled}
           data-testid="thoughts-input"
         />
