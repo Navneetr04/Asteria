@@ -149,21 +149,74 @@ export function useAudio() {
     if (!audioContextRef.current) return;
 
     try {
-      const oscillator = audioContextRef.current.createOscillator();
-      const gainNode = audioContextRef.current.createGain();
+      const currentTime = audioContextRef.current.currentTime;
       
-      oscillator.type = 'sine';
-      oscillator.frequency.setValueAtTime(800, audioContextRef.current.currentTime);
-      oscillator.frequency.exponentialRampToValueAtTime(200, audioContextRef.current.currentTime + 1);
+      // Main glistening bell-like tone
+      const mainOsc = audioContextRef.current.createOscillator();
+      const mainGain = audioContextRef.current.createGain();
+      const mainFilter = audioContextRef.current.createBiquadFilter();
       
-      gainNode.gain.setValueAtTime(0.1, audioContextRef.current.currentTime);
-      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContextRef.current.currentTime + 1);
+      mainOsc.type = 'sine';
+      mainOsc.frequency.setValueAtTime(1200, currentTime);
+      mainOsc.frequency.exponentialRampToValueAtTime(400, currentTime + 2);
       
-      oscillator.connect(gainNode);
-      gainNode.connect(audioContextRef.current.destination);
+      mainFilter.type = 'lowpass';
+      mainFilter.frequency.setValueAtTime(2000, currentTime);
+      mainFilter.Q.setValueAtTime(2, currentTime);
       
-      oscillator.start();
-      oscillator.stop(audioContextRef.current.currentTime + 1);
+      mainGain.gain.setValueAtTime(0.15, currentTime);
+      mainGain.gain.exponentialRampToValueAtTime(0.001, currentTime + 2);
+      
+      mainOsc.connect(mainFilter);
+      mainFilter.connect(mainGain);
+      mainGain.connect(audioContextRef.current.destination);
+      
+      mainOsc.start();
+      mainOsc.stop(currentTime + 2);
+
+      // Higher sparkle layer
+      const sparkleOsc = audioContextRef.current.createOscillator();
+      const sparkleGain = audioContextRef.current.createGain();
+      
+      sparkleOsc.type = 'triangle';
+      sparkleOsc.frequency.setValueAtTime(2400, currentTime);
+      sparkleOsc.frequency.exponentialRampToValueAtTime(800, currentTime + 1.5);
+      
+      sparkleGain.gain.setValueAtTime(0.08, currentTime);
+      sparkleGain.gain.exponentialRampToValueAtTime(0.001, currentTime + 1.5);
+      
+      sparkleOsc.connect(sparkleGain);
+      sparkleGain.connect(audioContextRef.current.destination);
+      
+      sparkleOsc.start();
+      sparkleOsc.stop(currentTime + 1.5);
+
+      // Shimmering modulation layer
+      const shimmerOsc = audioContextRef.current.createOscillator();
+      const shimmerGain = audioContextRef.current.createGain();
+      const shimmerLFO = audioContextRef.current.createOscillator();
+      const shimmerLFOGain = audioContextRef.current.createGain();
+      
+      shimmerOsc.type = 'sine';
+      shimmerOsc.frequency.setValueAtTime(600, currentTime);
+      
+      shimmerLFO.type = 'sine';
+      shimmerLFO.frequency.setValueAtTime(8, currentTime);
+      shimmerLFOGain.gain.setValueAtTime(0.03, currentTime);
+      
+      shimmerGain.gain.setValueAtTime(0.06, currentTime);
+      shimmerGain.gain.exponentialRampToValueAtTime(0.001, currentTime + 1.8);
+      
+      shimmerLFO.connect(shimmerLFOGain);
+      shimmerLFOGain.connect(shimmerGain.gain);
+      shimmerOsc.connect(shimmerGain);
+      shimmerGain.connect(audioContextRef.current.destination);
+      
+      shimmerOsc.start();
+      shimmerLFO.start();
+      shimmerOsc.stop(currentTime + 1.8);
+      shimmerLFO.stop(currentTime + 1.8);
+      
     } catch (error) {
       console.warn("Error playing release sound:", error);
     }

@@ -105,6 +105,10 @@ export default {
           "50%": { opacity: "0.5", transform: "scale(0.8)" },
           "100%": { opacity: "0", transform: "scale(0.3)" },
         },
+        pulse: {
+          "0%, 100%": { opacity: "0.4", transform: "scale(1)" },
+          "50%": { opacity: "0.8", transform: "scale(1.2)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -114,6 +118,7 @@ export default {
         rise: "rise 3s ease-out forwards",
         "fade-in": "fade-in 0.5s ease-in forwards",
         dissolve: "dissolve 1s ease-out forwards",
+        pulse: "pulse 2s ease-in-out infinite",
       },
     },
   },

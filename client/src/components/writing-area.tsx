@@ -55,16 +55,21 @@ export function WritingArea({ onRelease, disabled }: WritingAreaProps) {
             {/* Star rising animation */}
             <motion.div
               className="star absolute"
-              initial={{ scale: 0, opacity: 0, y: 0 }}
+              initial={{ scale: 0, opacity: 0, y: 0, rotate: 0 }}
               animate={{ 
-                scale: [0, 1.5, 1], 
-                opacity: [0, 1, 1], 
-                y: [0, 0, -600] 
+                scale: [0, 3, 2, 1.5, 1], 
+                opacity: [0, 1, 1, 1, 0.8], 
+                y: [0, 0, -100, -300, -600],
+                rotate: [0, 180, 360, 540, 720]
               }}
               transition={{ 
-                scale: { duration: 0.5, delay: 0.8 },
-                opacity: { duration: 0.3, delay: 0.8 },
-                y: { duration: 2, delay: 1.2, ease: "easeOut" }
+                scale: { duration: 1, delay: 0.8, ease: "easeOut" },
+                opacity: { duration: 0.5, delay: 0.8 },
+                y: { duration: 2.5, delay: 1.2, ease: "easeOut" },
+                rotate: { duration: 2.5, delay: 1.2, ease: "linear" }
+              }}
+              style={{
+                filter: "drop-shadow(0 0 20px hsl(45, 85%, 85%))"
               }}
             />
           </motion.div>

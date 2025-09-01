@@ -129,23 +129,40 @@
   }
 
   .star {
-    width: 4px;
-    height: 4px;
-    background: hsl(45, 85%, 85%);
+    width: 8px;
+    height: 8px;
+    background: radial-gradient(circle, hsl(45, 95%, 95%) 0%, hsl(45, 85%, 85%) 40%, hsl(45, 75%, 70%) 100%);
     border-radius: 50%;
-    box-shadow: 0 0 10px hsl(45, 85%, 85%), 0 0 20px hsl(45, 85%, 65%);
+    box-shadow: 
+      0 0 15px hsl(45, 85%, 85%), 
+      0 0 30px hsl(45, 85%, 65%),
+      0 0 45px hsl(45, 85%, 45%);
     position: absolute;
+    animation: twinkle 1.5s ease-in-out infinite alternate;
   }
 
   .star::before {
     content: '';
     position: absolute;
-    top: -2px;
-    left: -2px;
-    right: -2px;
-    bottom: -2px;
+    top: -6px;
+    left: -6px;
+    right: -6px;
+    bottom: -6px;
     background: radial-gradient(circle, hsl(45, 85%, 85%) 0%, transparent 70%);
     border-radius: 50%;
+    z-index: -1;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  .star::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, hsl(45, 85%, 85%) 50%, transparent 100%);
+    transform: translate(-50%, -50%);
     z-index: -1;
   }
 
