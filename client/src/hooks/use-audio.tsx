@@ -151,71 +151,47 @@ export function useAudio() {
     try {
       const currentTime = audioContextRef.current.currentTime;
       
-      // Main glistening bell-like tone
+      // Gentle bell-like tone - softer and more pleasant
       const mainOsc = audioContextRef.current.createOscillator();
       const mainGain = audioContextRef.current.createGain();
       const mainFilter = audioContextRef.current.createBiquadFilter();
       
       mainOsc.type = 'sine';
-      mainOsc.frequency.setValueAtTime(1200, currentTime);
-      mainOsc.frequency.exponentialRampToValueAtTime(400, currentTime + 2);
+      mainOsc.frequency.setValueAtTime(800, currentTime);
+      mainOsc.frequency.exponentialRampToValueAtTime(300, currentTime + 1.2);
       
       mainFilter.type = 'lowpass';
-      mainFilter.frequency.setValueAtTime(2000, currentTime);
-      mainFilter.Q.setValueAtTime(2, currentTime);
+      mainFilter.frequency.setValueAtTime(1200, currentTime);
+      mainFilter.Q.setValueAtTime(1, currentTime);
       
-      mainGain.gain.setValueAtTime(0.15, currentTime);
-      mainGain.gain.exponentialRampToValueAtTime(0.001, currentTime + 2);
+      mainGain.gain.setValueAtTime(0, currentTime);
+      mainGain.gain.linearRampToValueAtTime(0.08, currentTime + 0.1);
+      mainGain.gain.exponentialRampToValueAtTime(0.001, currentTime + 1.2);
       
       mainOsc.connect(mainFilter);
       mainFilter.connect(mainGain);
       mainGain.connect(audioContextRef.current.destination);
       
       mainOsc.start();
-      mainOsc.stop(currentTime + 2);
+      mainOsc.stop(currentTime + 1.2);
 
-      // Higher sparkle layer
-      const sparkleOsc = audioContextRef.current.createOscillator();
-      const sparkleGain = audioContextRef.current.createGain();
+      // Soft harmonic layer
+      const harmonicOsc = audioContextRef.current.createOscillator();
+      const harmonicGain = audioContextRef.current.createGain();
       
-      sparkleOsc.type = 'triangle';
-      sparkleOsc.frequency.setValueAtTime(2400, currentTime);
-      sparkleOsc.frequency.exponentialRampToValueAtTime(800, currentTime + 1.5);
+      harmonicOsc.type = 'sine';
+      harmonicOsc.frequency.setValueAtTime(1200, currentTime);
+      harmonicOsc.frequency.exponentialRampToValueAtTime(450, currentTime + 1);
       
-      sparkleGain.gain.setValueAtTime(0.08, currentTime);
-      sparkleGain.gain.exponentialRampToValueAtTime(0.001, currentTime + 1.5);
+      harmonicGain.gain.setValueAtTime(0, currentTime);
+      harmonicGain.gain.linearRampToValueAtTime(0.04, currentTime + 0.15);
+      harmonicGain.gain.exponentialRampToValueAtTime(0.001, currentTime + 1);
       
-      sparkleOsc.connect(sparkleGain);
-      sparkleGain.connect(audioContextRef.current.destination);
+      harmonicOsc.connect(harmonicGain);
+      harmonicGain.connect(audioContextRef.current.destination);
       
-      sparkleOsc.start();
-      sparkleOsc.stop(currentTime + 1.5);
-
-      // Shimmering modulation layer
-      const shimmerOsc = audioContextRef.current.createOscillator();
-      const shimmerGain = audioContextRef.current.createGain();
-      const shimmerLFO = audioContextRef.current.createOscillator();
-      const shimmerLFOGain = audioContextRef.current.createGain();
-      
-      shimmerOsc.type = 'sine';
-      shimmerOsc.frequency.setValueAtTime(600, currentTime);
-      
-      shimmerLFO.type = 'sine';
-      shimmerLFO.frequency.setValueAtTime(8, currentTime);
-      shimmerLFOGain.gain.setValueAtTime(0.03, currentTime);
-      
-      shimmerGain.gain.setValueAtTime(0.06, currentTime);
-      shimmerGain.gain.exponentialRampToValueAtTime(0.001, currentTime + 1.8);
-      
-      shimmerLFO.connect(shimmerLFOGain);
-      shimmerLFOGain.connect(shimmerGain.gain);
-      shimmerOsc.connect(shimmerGain);
-      shimmerGain.connect(audioContextRef.current.destination);
-      
-      shimmerOsc.start();
-      shimmerLFO.start();
-      shimmerOsc.stop(currentTime + 1.8);
-      shimmerLFO.stop(currentTime + 1.8);
+      harmonicOsc.start();
+      harmonicOsc.stop(currentTime + 1);
       
     } catch (error) {
       console.warn("Error playing release sound:", error);

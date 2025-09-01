@@ -17,7 +17,10 @@ export default function StarRelease() {
 
   const handleRelease = (text: string) => {
     addStar();
-    playReleaseSound();
+    // Play sound immediately when release starts
+    setTimeout(() => {
+      playReleaseSound();
+    }, 100);
     
     // Transition to sky view after star animation completes
     setTimeout(() => {
