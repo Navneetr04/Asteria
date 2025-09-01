@@ -154,17 +154,6 @@
     animation: pulse 2s ease-in-out infinite;
   }
 
-  .star::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 20px;
-    height: 1px;
-    background: linear-gradient(90deg, transparent 0%, hsl(45, 85%, 85%) 50%, transparent 100%);
-    transform: translate(-50%, -50%);
-    z-index: -1;
-  }
 
   .particle {
     width: 2px;
