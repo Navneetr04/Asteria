@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import backgroundMusicUrl from '@assets/galactic-serenity-suite-stocktune_1756756440455.mp3';
+import backgroundMusicUrl from '../assets/background-music.mp3';
 
 export function useAudio() {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -20,19 +20,23 @@ export function useAudio() {
         gainNodeRef.current.connect(audioContextRef.current.destination);
         gainNodeRef.current.gain.value = isMuted ? 0 : 0.2;
 
-        // Initialize background music
+        // Initialize background music with simpler approach
         backgroundAudioRef.current = new Audio(backgroundMusicUrl);
         backgroundAudioRef.current.loop = true;
-        backgroundAudioRef.current.volume = 0; // Start muted, will be controlled by gain node
+        backgroundAudioRef.current.volume = isMuted ? 0 : 0.08; // Direct volume control
         
-        // Create gain node for background music
-        backgroundGainNodeRef.current = audioContextRef.current.createGain();
-        backgroundGainNodeRef.current.gain.value = isMuted ? 0 : 0.15; // Low volume
-        backgroundGainNodeRef.current.connect(audioContextRef.current.destination);
+        // Add error handling for audio loading
+        backgroundAudioRef.current.addEventListener('error', (e) => {
+          console.warn("Background music failed to load:", e);
+        });
         
-        // Connect background audio to Web Audio API
-        backgroundSourceRef.current = audioContextRef.current.createMediaElementSource(backgroundAudioRef.current);
-        backgroundSourceRef.current.connect(backgroundGainNodeRef.current);
+        backgroundAudioRef.current.addEventListener('canplaythrough', () => {
+          console.log("Background music loaded and ready to play");
+        });
+        
+        backgroundAudioRef.current.addEventListener('loadstart', () => {
+          console.log("Started loading background music");
+        });
         
       } catch (error) {
         console.warn("Web Audio API not supported:", error);
@@ -162,10 +166,17 @@ export function useAudio() {
         
         // Start background music
         if (backgroundAudioRef.current) {
+          backgroundAudioRef.current.volume = isMuted ? 0 : 0.08;
           backgroundAudioRef.current.currentTime = 0;
-          backgroundAudioRef.current.play().catch(e => {
-            console.warn("Could not play background music:", e);
-          });
+          const playPromise = backgroundAudioRef.current.play();
+          if (playPromise !== undefined) {
+            playPromise.then(() => {
+              console.log("Background music started successfully");
+            }).catch(e => {
+              console.warn("Could not play background music:", e);
+              console.warn("This might be due to browser autoplay policy - user interaction required");
+            });
+          }
         }
         
         setIsPlaying(true);
@@ -176,10 +187,15 @@ export function useAudio() {
   };
 
   const toggleMute = () => {
-    if (gainNodeRef.current && backgroundGainNodeRef.current) {
+    if (gainNodeRef.current) {
       const newMutedState = !isMuted;
       gainNodeRef.current.gain.value = newMutedState ? 0 : 0.2;
-      backgroundGainNodeRef.current.gain.value = newMutedState ? 0 : 0.15; // Low volume for background music
+      
+      // Control background music volume directly
+      if (backgroundAudioRef.current) {
+        backgroundAudioRef.current.volume = newMutedState ? 0 : 0.08;
+      }
+      
       setIsMuted(newMutedState);
     }
   };
