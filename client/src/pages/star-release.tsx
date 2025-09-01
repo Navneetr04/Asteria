@@ -94,9 +94,7 @@ export default function StarRelease() {
               transition={{ duration: 0.8, delay: 0.3 }}
             >
               <h2 className="text-4xl md:text-5xl font-light text-glow mb-6">A safe space to let go</h2>
-              <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-                Write what's on your heart, and release it. Watch it transform into a star and float into the sky. No accounts. No judgment. Just you and your release.
-              </p>
+              <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">Write what's on your heart, and release it. Watch it transform into a star and float into the sky.</p>
             </motion.div>
 
             <motion.div
