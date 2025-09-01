@@ -5,7 +5,7 @@ export function useAudio() {
   const [isMuted, setIsMuted] = useState(true);
   const audioContextRef = useRef<AudioContext | null>(null);
   const gainNodeRef = useRef<GainNode | null>(null);
-  const oscillatorRef = useRef<OscillatorNode | null>(null);
+  const oscillatorsRef = useRef<OscillatorNode[]>([]);
 
   useEffect(() => {
     // Initialize Web Audio API for ambient sounds
@@ -23,9 +23,13 @@ export function useAudio() {
     initAudio();
 
     return () => {
-      if (oscillatorRef.current) {
-        oscillatorRef.current.stop();
-      }
+      oscillatorsRef.current.forEach(osc => {
+        try {
+          osc.stop();
+        } catch (e) {
+          // Oscillator may already be stopped
+        }
+      });
       if (audioContextRef.current) {
         audioContextRef.current.close();
       }
@@ -36,29 +40,91 @@ export function useAudio() {
     if (!audioContextRef.current || !gainNodeRef.current) return;
 
     if (isPlaying) {
-      // Stop ambient sound
-      if (oscillatorRef.current) {
-        oscillatorRef.current.stop();
-        oscillatorRef.current = null;
-      }
+      // Stop all ambient sounds
+      oscillatorsRef.current.forEach(osc => {
+        try {
+          osc.stop();
+        } catch (e) {
+          // Oscillator may already be stopped
+        }
+      });
+      oscillatorsRef.current = [];
       setIsPlaying(false);
     } else {
-      // Start ambient sound (gentle white noise)
+      // Start immersive calming sky soundscape
       try {
-        const oscillator = audioContextRef.current.createOscillator();
-        const filter = audioContextRef.current.createBiquadFilter();
+        const currentTime = audioContextRef.current.currentTime;
+        const newOscillators: OscillatorNode[] = [];
+
+        // Wind-like base layer
+        const windOsc = audioContextRef.current.createOscillator();
+        const windFilter = audioContextRef.current.createBiquadFilter();
+        const windGain = audioContextRef.current.createGain();
         
-        oscillator.type = 'brown';
-        oscillator.frequency.setValueAtTime(100, audioContextRef.current.currentTime);
+        windOsc.type = 'sawtooth';
+        windOsc.frequency.setValueAtTime(40, currentTime);
+        windFilter.type = 'lowpass';
+        windFilter.frequency.setValueAtTime(150, currentTime);
+        windGain.gain.setValueAtTime(0.03, currentTime);
         
-        filter.type = 'lowpass';
-        filter.frequency.setValueAtTime(200, audioContextRef.current.currentTime);
+        windOsc.connect(windFilter);
+        windFilter.connect(windGain);
+        windGain.connect(gainNodeRef.current);
+        windOsc.start();
+        newOscillators.push(windOsc);
+
+        // Atmospheric drone layer
+        const droneOsc = audioContextRef.current.createOscillator();
+        const droneGain = audioContextRef.current.createGain();
         
-        oscillator.connect(filter);
-        filter.connect(gainNodeRef.current);
+        droneOsc.type = 'sine';
+        droneOsc.frequency.setValueAtTime(80, currentTime);
+        droneGain.gain.setValueAtTime(0.02, currentTime);
         
-        oscillator.start();
-        oscillatorRef.current = oscillator;
+        droneOsc.connect(droneGain);
+        droneGain.connect(gainNodeRef.current);
+        droneOsc.start();
+        newOscillators.push(droneOsc);
+
+        // Celestial harmonics
+        const harmonic1 = audioContextRef.current.createOscillator();
+        const harmonic1Gain = audioContextRef.current.createGain();
+        
+        harmonic1.type = 'sine';
+        harmonic1.frequency.setValueAtTime(160, currentTime);
+        harmonic1Gain.gain.setValueAtTime(0.015, currentTime);
+        
+        harmonic1.connect(harmonic1Gain);
+        harmonic1Gain.connect(gainNodeRef.current);
+        harmonic1.start();
+        newOscillators.push(harmonic1);
+
+        const harmonic2 = audioContextRef.current.createOscillator();
+        const harmonic2Gain = audioContextRef.current.createGain();
+        
+        harmonic2.type = 'sine';
+        harmonic2.frequency.setValueAtTime(240, currentTime);
+        harmonic2Gain.gain.setValueAtTime(0.01, currentTime);
+        
+        harmonic2.connect(harmonic2Gain);
+        harmonic2Gain.connect(gainNodeRef.current);
+        harmonic2.start();
+        newOscillators.push(harmonic2);
+
+        // Add gentle modulation for breathing effect
+        const lfo = audioContextRef.current.createOscillator();
+        const lfoGain = audioContextRef.current.createGain();
+        
+        lfo.type = 'sine';
+        lfo.frequency.setValueAtTime(0.1, currentTime);
+        lfoGain.gain.setValueAtTime(0.005, currentTime);
+        
+        lfo.connect(lfoGain);
+        lfoGain.connect(windGain.gain);
+        lfo.start();
+        newOscillators.push(lfo);
+
+        oscillatorsRef.current = newOscillators;
         setIsPlaying(true);
       } catch (error) {
         console.warn("Error starting audio:", error);
