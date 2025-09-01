@@ -45,7 +45,7 @@ export default function StarRelease() {
 
   useEffect(() => {
     // Set the page title
-    document.title = "Star Release - Let Go, Find Peace";
+    document.title = "Asteria - Let Go, Find Peace";
     
     // Add meta description for SEO
     const metaDescription = document.createElement('meta');
@@ -74,7 +74,7 @@ export default function StarRelease() {
           <div className="w-8 h-8 bg-gradient-to-br from-primary to-accent rounded-full flex items-center justify-center">
             <span className="text-accent-foreground text-lg font-semibold">★</span>
           </div>
-          <h1 className="text-xl font-semibold text-foreground">Star Release</h1>
+          <h1 className="text-xl font-semibold text-foreground">Asteria</h1>
         </motion.div>
         
         <motion.div
