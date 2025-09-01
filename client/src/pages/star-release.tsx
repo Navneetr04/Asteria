@@ -62,7 +62,6 @@ export default function StarRelease() {
     <div className="min-h-screen flex flex-col relative">
       <FloatingParticles />
       <StarsContainer stars={stars} />
-      
       {/* Header */}
       <header className="p-6 flex justify-between items-center relative z-20">
         <motion.div
@@ -84,7 +83,6 @@ export default function StarRelease() {
           />
         </motion.div>
       </header>
-
       {/* Main Content */}
       <section className="flex-1 flex flex-col items-center justify-center px-6 py-12 relative z-20">
         {viewMode === 'writing' ? (
@@ -95,9 +93,7 @@ export default function StarRelease() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.3 }}
             >
-              <h2 className="text-4xl md:text-5xl font-light text-glow mb-6">
-                Sometimes, you need to let it out
-              </h2>
+              <h2 className="text-4xl md:text-5xl font-light text-glow mb-6">A safe space to let go</h2>
               <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
                 Write what's on your heart, and release it. Watch it transform into a star and float into the sky. No accounts. No judgment. Just you and your release.
               </p>
@@ -146,7 +142,6 @@ Let it Go
           </motion.div>
         )}
       </section>
-
       {/* Stars Counter */}
       <motion.div
         className="fixed bottom-6 left-6 bg-card rounded-lg p-4 border border-border z-20"
@@ -164,7 +159,6 @@ Let it Go
           </div>
         </div>
       </motion.div>
-
       {/* Affirmation Modal */}
       <AffirmationModal
         isOpen={showAffirmation}
