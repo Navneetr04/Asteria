@@ -155,6 +155,19 @@
   }
 
 
+  /* Remove all borders from textarea */
+  textarea {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+  }
+
+  textarea:focus {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+  }
+
   .particle {
     width: 2px;
     height: 2px;
