@@ -14,7 +14,7 @@ export function useAudio() {
         audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
         gainNodeRef.current = audioContextRef.current.createGain();
         gainNodeRef.current.connect(audioContextRef.current.destination);
-        gainNodeRef.current.gain.value = isMuted ? 0 : 0.1;
+        gainNodeRef.current.gain.value = isMuted ? 0 : 0.2;
       } catch (error) {
         console.warn("Web Audio API not supported:", error);
       }
@@ -38,6 +38,11 @@ export function useAudio() {
 
   const toggleAudio = () => {
     if (!audioContextRef.current || !gainNodeRef.current) return;
+
+    // Resume audio context if it's suspended (required by browsers)
+    if (audioContextRef.current.state === 'suspended') {
+      audioContextRef.current.resume();
+    }
 
     if (isPlaying) {
       // Stop all ambient sounds
@@ -65,7 +70,7 @@ export function useAudio() {
         windOsc.frequency.setValueAtTime(40, currentTime);
         windFilter.type = 'lowpass';
         windFilter.frequency.setValueAtTime(150, currentTime);
-        windGain.gain.setValueAtTime(0.03, currentTime);
+        windGain.gain.setValueAtTime(0.08, currentTime);
         
         windOsc.connect(windFilter);
         windFilter.connect(windGain);
@@ -79,7 +84,7 @@ export function useAudio() {
         
         droneOsc.type = 'sine';
         droneOsc.frequency.setValueAtTime(80, currentTime);
-        droneGain.gain.setValueAtTime(0.02, currentTime);
+        droneGain.gain.setValueAtTime(0.05, currentTime);
         
         droneOsc.connect(droneGain);
         droneGain.connect(gainNodeRef.current);
@@ -92,7 +97,7 @@ export function useAudio() {
         
         harmonic1.type = 'sine';
         harmonic1.frequency.setValueAtTime(160, currentTime);
-        harmonic1Gain.gain.setValueAtTime(0.015, currentTime);
+        harmonic1Gain.gain.setValueAtTime(0.03, currentTime);
         
         harmonic1.connect(harmonic1Gain);
         harmonic1Gain.connect(gainNodeRef.current);
@@ -104,7 +109,7 @@ export function useAudio() {
         
         harmonic2.type = 'sine';
         harmonic2.frequency.setValueAtTime(240, currentTime);
-        harmonic2Gain.gain.setValueAtTime(0.01, currentTime);
+        harmonic2Gain.gain.setValueAtTime(0.02, currentTime);
         
         harmonic2.connect(harmonic2Gain);
         harmonic2Gain.connect(gainNodeRef.current);
@@ -135,7 +140,7 @@ export function useAudio() {
   const toggleMute = () => {
     if (gainNodeRef.current) {
       const newMutedState = !isMuted;
-      gainNodeRef.current.gain.value = newMutedState ? 0 : 0.1;
+      gainNodeRef.current.gain.value = newMutedState ? 0 : 0.2;
       setIsMuted(newMutedState);
     }
   };
